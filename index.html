@@ -273,7 +273,7 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
         setTimeout(function () { location.href = HOME; }, 800);
       })
       .catch(function () {
-        show("off", "Can't reach the server. Switch NetBird on and check again. If NetBird is already on, your browser may be blocking the check, so use Open Home.");
+        show("off", "Can't reach the server. Switch NetBird on and check again. If your browser asks to access devices on your local network, click Allow.");
       })
       .then(function () { clearTimeout(timer); btn.disabled = false; });
   }
