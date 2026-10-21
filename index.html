@@ -74,6 +74,8 @@ strong { color: var(--text-hi); font-weight: 500; }
 [data-state="off"] #status-badge { color: var(--negative); }
 #status-text { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--sep); }
 #check { width: 100%; margin-top: 12px; padding-block: 10px; }
+.btn-ghost { display: block; text-align: center; margin-top: 8px; padding: 9px 16px; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-hi); font-weight: 500; }
+.btn-ghost:hover { border-color: var(--primary); color: var(--primary); text-decoration: none; }
 .linkbtn { font: inherit; color: var(--primary); background: none; border: 0; padding: 0; cursor: pointer; }
 .linkbtn:hover { text-decoration: underline; }
 .linkbtn:disabled { color: var(--text-sub); cursor: progress; }
@@ -146,6 +148,7 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
         </div>
         <p id="status-text">Checking…</p>
         <button class="btn" id="check" type="button">Check again</button>
+        <a class="btn-ghost" id="open-home" href="https://home.tvserver.homes/">Open Home</a>
       </div>
     </section>
 
@@ -270,7 +273,7 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
         setTimeout(function () { location.href = HOME; }, 800);
       })
       .catch(function () {
-        show("off", "Not connected. Switch NetBird on, then check again.");
+        show("off", "Can't reach the server. Switch NetBird on and check again. If NetBird is already on, your browser may be blocking the check, so use Open Home.");
       })
       .then(function () { clearTimeout(timer); btn.disabled = false; });
   }
