@@ -271,7 +271,7 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
 (function () {
   // Requests go through Web3Forms, which emails them to ghazi. The access key only
   // allows sending to ghazi's own inbox, so it is safe in a public page.
-  var ACCESS_KEY = "WEB3FORMS_ACCESS_KEY";
+  var ACCESS_KEY = "01c24837-8b33-4cd4-bcb8-e8865789bdf4";
   var form = document.getElementById("invite-form");
   var email = document.getElementById("invite-email");
   var name = document.getElementById("invite-name");
@@ -299,7 +299,8 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
         from_name: "TV Server",
         name: who || "(not given)",
         email: addr,
-        replyto: addr
+        replyto: addr,
+        message: (who || "Someone") + " (" + addr + ") is asking for a TV Server invite. Reply to this email to send it."
       })
     })
       .then(function (r) { return r.json(); })
