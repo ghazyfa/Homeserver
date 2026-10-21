@@ -73,9 +73,6 @@ strong { color: var(--text-hi); font-weight: 500; }
 [data-state="on"] #status-badge { color: var(--positive); }
 [data-state="off"] #status-badge { color: var(--negative); }
 #status-text { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--sep); }
-#check { width: 100%; margin-top: 12px; padding-block: 10px; }
-.btn-ghost { display: block; text-align: center; margin-top: 8px; padding: 9px 16px; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-hi); font-weight: 500; }
-.btn-ghost:hover { border-color: var(--primary); color: var(--primary); text-decoration: none; }
 .linkbtn { font: inherit; color: var(--primary); background: none; border: 0; padding: 0; cursor: pointer; }
 .linkbtn:hover { text-decoration: underline; }
 .linkbtn:disabled { color: var(--text-sub); cursor: progress; }
@@ -134,21 +131,19 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
   <div class="col">
     <section>
       <div class="widget-header"><span>Connection</span></div>
-      <div class="widget-content" id="status" data-state="idle" aria-live="polite">
+      <div class="widget-content" id="status" data-state="off">
         <div class="monitor">
           <svg class="monitor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12.5" rx="2"/><path d="M8.5 2.5 12 6l3.5-3.5M8 21.5h8"/></svg>
           <div class="monitor-body">
             <div class="monitor-name">TV Server</div>
-            <div class="monitor-state" id="status-badge">…</div>
+            <div class="monitor-state" id="status-badge">Not connected</div>
           </div>
           <span class="status-dot" aria-hidden="true">
             <svg class="ok" viewBox="0 0 12 12" fill="none" stroke="hsl(232 30% 11%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2 5 8.5l4.5-5"/></svg>
             <svg class="no" viewBox="0 0 12 12" fill="none" stroke="hsl(232 30% 11%)" stroke-width="2" stroke-linecap="round"><path d="M3 3l6 6M9 3 3 9"/></svg>
           </span>
         </div>
-        <p id="status-text">Checking…</p>
-        <button class="btn" id="check" type="button">Check again</button>
-        <a class="btn-ghost" id="open-home" href="https://home.tvserver.homes/">Open Home</a>
+        <p id="status-text">If you can see this page, this device can't reach the server. Turn NetBird on, then reload. Just switched it on? Give it a minute.</p>
       </div>
     </section>
 
@@ -247,41 +242,6 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
     </section>
   </div>
 </main>
-
-<script>
-(function () {
-  // A no-cors request only succeeds if this device can reach the server, which happens
-  // on the home Wi-Fi or with NetBird on. Off the VPN the name doesn't resolve, so it
-  // fails fast. On success, send the visitor on to the dashboard.
-  var PROBE = "https://auth.tvserver.homes/-/health/live/";
-  var HOME = "https://home.tvserver.homes/";
-  var box = document.getElementById("status");
-  var text = document.getElementById("status-text");
-  var btn = document.getElementById("check");
-
-  var badge = document.getElementById("status-badge");
-  function show(state, msg) { box.setAttribute("data-state", state); text.textContent = msg; badge.textContent = state === "on" ? "Online" : state === "off" ? "Offline" : "…"; }
-
-  function check() {
-    btn.disabled = true;
-    show("idle", "Checking…");
-    var ctrl = "AbortController" in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 7000);
-    fetch(PROBE + "?t=" + Date.now(), { mode: "no-cors", cache: "no-store", signal: ctrl ? ctrl.signal : undefined })
-      .then(function () {
-        show("on", "Connected. Opening Home…");
-        setTimeout(function () { location.href = HOME; }, 800);
-      })
-      .catch(function () {
-        show("off", "Can't reach the server. Switch NetBird on and check again. If your browser asks to access devices on your local network, click Allow.");
-      })
-      .then(function () { clearTimeout(timer); btn.disabled = false; });
-  }
-
-  btn.addEventListener("click", check);
-  check();
-})();
-</script>
 
 <script>
 (function () {
