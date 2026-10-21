@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="TV Server: how to get connected.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!--PREVIEW-START-->
 <title>TV Server Gateway</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -43,7 +45,8 @@ strong { color: var(--text-hi); font-weight: 500; }
 /* Header, like Glance's */
 .header { border-bottom: 1px solid var(--sep); }
 .header .shell { display: flex; align-items: stretch; gap: 22px; height: 52px; }
-.logo { display: flex; align-items: center; padding-right: 22px; border-right: 1px solid var(--sep); color: var(--text-hi); font-size: 18px; font-weight: 600; }
+.logo { display: flex; align-items: center; padding-right: 22px; border-right: 1px solid var(--sep); color: var(--text-hi); font-size: 18px; font-weight: 600; gap: 10px; }
+.logo svg { width: 28px; height: 28px; flex: none; color: var(--primary); }
 .nav { display: flex; align-items: stretch; gap: 18px; }
 .nav span { display: flex; align-items: center; color: var(--text-hi); border-bottom: 2px solid var(--primary); padding-top: 2px; }
 
@@ -122,7 +125,7 @@ button.send:disabled, .btn:disabled { opacity: 0.6; cursor: progress; }
 <!--BODY-START-->
 <header class="header">
   <div class="shell">
-    <div class="logo">TV</div>
+    <div class="logo"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M24 10l8 8 8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="18" width="46" height="32" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M28 27.5v13l11-6.5z" fill="currentColor"/><path d="M22 55h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><span>TV Server</span></div>
     <nav class="nav" aria-label="Pages"><span>Gateway</span></nav>
   </div>
 </header>
