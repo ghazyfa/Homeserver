@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="TV Server is ghazi's private home server. Request an invite and set up NetBird to get in.">
+<meta name="description" content="TV Server is ghazi's private home server. Get an invite and set up NetBird to get in.">
 <meta property="og:title" content="TV Server">
 <meta property="og:description" content="A private home server. Invite only.">
 <meta property="og:image" content="https://tvserver.homes/apple-touch-icon.png">
@@ -15,312 +15,306 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* Tokens and rules come from DESIGN.md. Layout: header, two-column hero (invite form | connection
-   diagram), then the three steps beside the device picker and its setup steps. */
+/* Styled like the Jellyseerr sign-in page (values from its Tailwind source): gray-900 page, a dimmed
+   poster wall behind everything, the stacked logo, then translucent blurred cards with indigo buttons.
+   Card 1 is the invite form, card 2 the three steps and the device tabs (folded on phones). */
 :root {
-  --bg: #0E0F14;
-  --surface: #15161D;
-  --surface-2: #1C1E27;
-  --border: #2A2C38;
-  --text: #ECEDF2;
-  --text-muted: #A6A8B6;
-  --text-subtle: #888B98;
-  --primary: #A87CF3;
-  --primary-ink: #16101F;
-  --success: #4CC38A;
-  --error: #F0686C;
-  --font: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --r-control: 8px;
-  --r-panel: 14px;
-  --width: 1120px;
-  --gutter: 16px;
-  --section: 40px;
+  --gray-900: #111827;
+  --gray-800: #1f2937;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-300: #d1d5db;
+  --gray-200: #e5e7eb;
+  --neutral-200: #e5e5e5;
+  --indigo-400: #818cf8;
+  --indigo-500: #6366f1;
+  --indigo-600: #4f46e5;
+  --red-500: #ef4444;
+  --red-200: #fecaca;
+  --green-400: #4ade80;
+  --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r-md: 6px;
+  --r-lg: 8px;
   color-scheme: dark;
 }
-@media (min-width: 768px) { :root { --gutter: 32px; --section: 56px; } }
-
 * { box-sizing: border-box; }
-html { background: var(--bg); scroll-behavior: smooth; }
+html { background: var(--gray-900); scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
-a { color: var(--primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
-strong { font-weight: 600; color: var(--text); }
-:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
-h1, h2, h3, p { margin: 0; }
+body { margin: 0; min-height: 100vh; background: var(--gray-900); color: var(--gray-300); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; position: relative; overflow-x: hidden; }
+h1, h2, h3, p, ol { margin: 0; }
+strong { color: var(--gray-200); font-weight: 600; }
+a { color: var(--indigo-500); text-decoration: none; }
+a:hover { color: var(--indigo-400); }
+:focus-visible { outline: 2px solid var(--indigo-500); outline-offset: 2px; }
 [hidden] { display: none !important; }
-
-.skip { position: absolute; left: var(--gutter); top: -60px; background: var(--primary); color: var(--primary-ink); padding: 10px 14px; border-radius: var(--r-control); font-weight: 600; z-index: 10; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 60; background: var(--indigo-600); color: #fff; padding: 8px 12px; border-radius: var(--r-md); }
 .skip:focus { top: 12px; }
-
-.shell { max-width: var(--width); margin: 0 auto; padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
-.label { font: 500 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-subtle); }
-.muted { color: var(--text-muted); }
-.small { font-size: 14px; line-height: 1.5; }
-
-/* Header */
-.header { border-bottom: 1px solid var(--border); }
-.header .shell { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 600; font-size: 17px; }
-.brand:hover { text-decoration: none; }
-.brand svg { width: 28px; height: 28px; color: var(--primary); flex: none; }
-.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; font: 500 12px/1 var(--mono); color: var(--error); white-space: nowrap; }
-.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--error); }
-
-/* Hero */
-.hero { display: grid; gap: 32px; padding-top: 32px; }
-@media (min-width: 960px) { .hero { grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; padding-top: 48px; } }
-.hero h1 { font-size: clamp(34px, 5vw, 50px); line-height: 1.08; font-weight: 600; letter-spacing: -0.02em; margin-top: 16px; max-width: 16ch; text-wrap: balance; }
-.lead { font-size: 17px; line-height: 1.55; color: var(--text-muted); margin-top: 14px; max-width: 54ch; }
-
-.invite { margin-top: 24px; scroll-margin-top: 24px; }
-.invite-row { display: grid; gap: 12px; }
-@media (min-width: 640px) { .invite-row { grid-template-columns: 1fr 1.3fr auto; align-items: end; } }
-.field { display: grid; gap: 6px; }
-.field .label { color: var(--text-muted); }
-input[type="text"], input[type="email"], select {
-  font: inherit; font-size: 16px; color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--r-control); height: 44px; padding: 0 12px; width: 100%; min-width: 0;
-}
-input::placeholder { color: var(--text-subtle); }
-input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgb(168 124 243 / 0.25); }
-.btn { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border: 0; border-radius: var(--r-control); background: var(--primary); color: var(--primary-ink); font: 600 15px/1 var(--font); cursor: pointer; white-space: nowrap; }
-.btn:hover { filter: brightness(1.08); text-decoration: none; }
-.btn:disabled { opacity: 0.6; cursor: progress; }
-.form-msg { margin-top: 10px; min-height: 1.5em; font-size: 14px; color: var(--text-muted); }
-.form-msg[data-kind="ok"] { color: var(--success); }
-.form-msg[data-kind="err"] { color: var(--error); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-/* Connection panel */
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-panel); padding: 20px; }
-.conn-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.path { display: grid; grid-template-columns: auto 1fr auto 1fr auto; align-items: center; gap: 10px; margin: 20px 0 18px; }
-.node { display: grid; justify-items: center; gap: 8px; text-align: center; font: 500 12px/1.3 var(--mono); color: var(--text-muted); white-space: nowrap; }
-.node svg { width: 44px; height: 44px; padding: 10px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
-.node.server svg { color: var(--primary); }
-.link { height: 0; border-top: 2px solid var(--border); position: relative; margin-bottom: 26px; }
-.link.broken { border-top-style: dashed; border-color: var(--error); }
-.link.broken::after { content: "×"; position: absolute; left: 50%; top: -13px; transform: translateX(-50%); width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); color: var(--error); font: 600 16px/1 var(--font); }
-.conn-text { font-size: 17px; font-weight: 500; }
-.conn-sub { margin-top: 8px; }
+/* Poster wall: plain colored tiles stand in for the movie backdrops, under Jellyseerr's own gradient. */
+.wall { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.wall .posters { position: absolute; inset: -40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); grid-auto-rows: 180px; gap: 14px; transform: rotate(-8deg) scale(1.15); filter: blur(2px) saturate(1.2); opacity: 0.55; }
+.wall .posters i { border-radius: var(--r-lg); background: linear-gradient(160deg, var(--a), var(--b)); }
+.wall::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%); }
+/* Live backdrops: this week's trending movies and shows from TMDB (backdrops.json, refreshed daily by
+   a GitHub Action). They fade in over the tiles, like Jellyseerr's ImageFader; the tiles stay as the fallback. */
+.wall .shot { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .3s ease-in; }
+.wall .shot.on { opacity: 1; }
+.wall.live .posters { display: none; }
+.credit { position: relative; z-index: 40; max-width: 448px; margin: 0 auto; padding: 0 16px 24px; text-align: center; color: var(--gray-500); font-size: 12px; }
 
-/* Sections */
-.section { padding-top: var(--section); }
-.section h2 { font-size: 24px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; margin-top: 10px; }
+.status-pill { position: absolute; top: 16px; right: 16px; z-index: 50; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--r-md); border: 1px solid var(--gray-600); background: rgba(31, 41, 55, 0.8); color: var(--gray-200); font-size: 13px; font-weight: 500; }
+.status-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red-500); }
 
-.steps { list-style: none; margin: 16px 0 0; padding: 0; counter-reset: s; }
-.steps li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 0 12px; padding: 12px 0; border-top: 1px solid var(--border); }
-.steps li::before { content: "0" counter(s); grid-row: span 2; font: 500 13px/1.6 var(--mono); color: var(--primary); }
-.steps h3 { font-size: 16px; line-height: 1.5; font-weight: 600; }
-.steps p { color: var(--text-muted); font-size: 14px; line-height: 1.5; }
+main { position: relative; z-index: 40; padding: 56px 16px 56px; }
+.logo { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; color: #fff; }
+.logo svg { width: 84px; height: 84px; color: var(--indigo-400); filter: drop-shadow(0 6px 24px rgba(99, 102, 241, 0.45)); }
+.logo h1 { font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
+.logo p { color: var(--gray-400); font-size: 14px; }
 
-.install { display: grid; gap: 28px; }
-@media (min-width: 960px) { .install { grid-template-columns: 0.8fr 1.2fr; gap: 56px; align-items: start; } }
-.install-side > p { margin-top: 12px; color: var(--text-muted); max-width: 44ch; }
-.picker { max-width: 320px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border); max-width: none; }
-.picker select { max-width: 320px; }
-select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23A6A8B6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center; background-size: 14px; }
-.device-panel ol { margin: 0; padding: 0; list-style: none; counter-reset: d; display: grid; gap: 10px; }
-.device-panel li { counter-increment: d; display: grid; grid-template-columns: 28px 1fr; gap: 12px; max-width: 64ch; }
-.device-panel li::before { content: counter(d); width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); display: grid; place-items: center; font: 500 13px/1 var(--mono); color: var(--primary); }
-.device-tip { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
-.device-panel + .device-panel { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
-.js .device-panel + .device-panel { margin-top: 0; padding-top: 0; border-top: 0; }
+.card { width: 100%; max-width: 448px; margin: 28px auto 0; background: rgba(31, 41, 55, 0.5); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); border-radius: var(--r-lg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3); padding: 32px 40px; }
+.card + .card { margin-top: 16px; }
+.card-title { text-align: center; font-size: 18px; font-weight: 700; color: var(--neutral-200); }
+.card-sub { text-align: center; margin-top: 4px; color: var(--gray-400); font-size: 14px; }
 
+.alert { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--red-500); background: rgba(239, 68, 68, 0.2); color: var(--red-200); font-size: 14px; line-height: 1.45; }
+.alert svg { width: 18px; height: 18px; flex: none; margin-top: 1px; color: #fca5a5; }
 
+.invite { margin-top: 20px; display: grid; gap: 12px; scroll-margin-top: 24px; }
+.input { display: block; width: 100%; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid var(--gray-500); border-radius: var(--r-md); background: rgba(55, 65, 81, 0.8); color: #fff; font: 400 16px var(--font); transition: border-color .15s, box-shadow .15s; }
+.input::placeholder { color: var(--gray-400); }
+.input:focus { outline: none; border-color: var(--indigo-500); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.45); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 40px; padding: 0 16px; border: 1px solid var(--indigo-500); border-radius: var(--r-md); background: rgba(79, 70, 229, 0.8); color: #fff; font: 500 14px/1.25 var(--font); cursor: pointer; transition: background-color .15s; }
+.btn:hover { background: var(--indigo-600); }
+.btn:disabled { opacity: .5; cursor: progress; }
+.form-msg { min-height: 1.4em; margin-top: -4px; font-size: 14px; color: var(--gray-400); text-align: center; }
+.form-msg:empty { display: none; }
+.form-msg[data-kind="ok"] { color: var(--green-400); }
+.form-msg[data-kind="err"] { color: #f87171; }
 
-.notice, .phone-only { display: none; }
-.done { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
+.divider { display: flex; align-items: center; gap: 8px; margin: 24px 0 18px; color: var(--gray-400); font-size: 14px; }
+.divider::before, .divider::after { content: ""; flex: 1; border-top: 1px solid var(--gray-600); }
 
-/* Phones: one column that reads like an app screen. A slim notice replaces the header pill and
-   the connection panel, the overview steps give way to the device steps, panels go edge to edge. */
-@media (max-width: 639px) {
-  .header .pill, #status, .install-side { display: none; }
-  .notice { display: flex; align-items: center; gap: 10px; padding: 10px var(--gutter); background: rgb(240 104 108 / 0.1); border-bottom: 1px solid rgb(240 104 108 / 0.25); color: var(--text); font-size: 14px; line-height: 1.4; }
-  .notice::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--error); }
-  .header .shell { height: 56px; }
-  .hero { gap: 0; padding-top: 28px; }
-  .hero h1 { font-size: 30px; margin-top: 8px; }
-  .lead { font-size: 16px; margin-top: 10px; }
-  .invite { margin-top: 20px; }
-  .invite-row { gap: 10px; }
-  .install { padding-top: 32px; }
-  .install > .panel { background: none; border: 0; border-radius: 0; padding: 0; }
-  .phone-only { display: block; }
-  .install h2.phone-only { font-size: 22px; line-height: 1.25; font-weight: 600; margin: 6px 0 14px; }
-  .picker { padding-bottom: 16px; margin-bottom: 16px; }
-  .picker select { max-width: none; }
-  .device-panel li { font-size: 15px; }
-  .footer { margin-top: 32px; }
+.steps { list-style: none; padding: 0; display: grid; gap: 12px; counter-reset: step; }
+.steps li { counter-increment: step; }
+.steps li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
+.steps li::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(79, 70, 229, 0.25); border: 1px solid var(--indigo-500); color: #c7d2fe; font-size: 13px; font-weight: 600; }
+.steps h3 { font-size: 15px; font-weight: 600; color: var(--gray-200); line-height: 28px; }
+.steps p { color: var(--gray-400); font-size: 14px; line-height: 1.45; }
+
+.fold { margin-top: 22px; }
+.fold > summary { list-style: none; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold-head { display: none; }
+@media (min-width: 640px) { .fold > summary { display: none; } }
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--gray-600); overflow-x: auto; }
+.tab { flex: none; padding: 0 0 8px; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--gray-400); font: 500 14px/1.5 var(--font); cursor: pointer; transition: color .15s; }
+.tab:hover { color: var(--gray-200); }
+.tab[aria-selected="true"] { color: var(--indigo-400); border-bottom-color: var(--indigo-500); }
+.device-panel { padding-top: 14px; }
+.device-panel ol { padding-left: 1.4em; display: grid; gap: 5px; font-size: 14px; line-height: 1.5; }
+.device-panel li::marker { color: var(--indigo-400); font-weight: 600; }
+
+/* Desktop: two columns. The logo and invite card on the left, the steps and device tabs on the right. */
+@media (min-width: 960px) {
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px 32px; align-items: start; max-width: 1080px; margin: 0 auto; padding: 72px 32px 48px; }
+  .logo { grid-column: 1; align-items: flex-start; margin-top: 0; text-align: left; }
+  .logo svg { width: 72px; height: 72px; }
+  .logo h1 { font-size: 44px; }
+  .logo p { font-size: 16px; }
+  main > .card { margin: 0; max-width: none; }
+  main > .card:first-of-type { grid-column: 1; }
+  main > .card + .card { grid-column: 2; grid-row: 1 / span 2; margin: 0; padding: 32px; }
+  .card-title { text-align: left; }
+  .card-sub { text-align: left; }
+  .credit { max-width: 1080px; text-align: right; padding: 0 32px 24px; }
 }
-.footer { margin-top: var(--section); border-top: 1px solid var(--border); }
-.footer .shell { padding-block: 16px 24px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; color: var(--text-subtle); font-size: 14px; }
+@media (max-width: 639px) {
+  main { padding-top: 48px; }
+  .logo { margin-top: 0; gap: 6px; }
+  .logo svg { width: 60px; height: 60px; }
+  .logo h1 { font-size: 28px; }
+  .card { margin-top: 20px; padding: 24px 20px; border-radius: var(--r-lg); }
+  .fold > summary { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 1px solid var(--gray-600); border-radius: var(--r-md); color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .fold > summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+  .fold[open] > summary { margin-bottom: 14px; }
+  .fold[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+}
 </style>
 <!--HEAD-END-->
 </head>
 <body>
 <!--BODY-START-->
 <a class="skip" href="#main">Skip to content</a>
+<div class="wall" aria-hidden="true"><div class="posters">
+  <i style="--a:#4c1d95;--b:#1e1b4b"></i><i style="--a:#0e7490;--b:#082f49"></i><i style="--a:#9d174d;--b:#3b0764"></i><i style="--a:#b45309;--b:#431407"></i><i style="--a:#3730a3;--b:#0f172a"></i><i style="--a:#065f46;--b:#022c22"></i><i style="--a:#7e22ce;--b:#2e1065"></i><i style="--a:#be123c;--b:#4c0519"></i><i style="--a:#1d4ed8;--b:#172554"></i><i style="--a:#a16207;--b:#422006"></i><i style="--a:#0f766e;--b:#042f2e"></i><i style="--a:#6d28d9;--b:#1e1b4b"></i>
+  <i style="--a:#c2410c;--b:#431407"></i><i style="--a:#4338ca;--b:#1e1b4b"></i><i style="--a:#0369a1;--b:#082f49"></i><i style="--a:#a21caf;--b:#3b0764"></i><i style="--a:#15803d;--b:#052e16"></i><i style="--a:#9f1239;--b:#4c0519"></i><i style="--a:#5b21b6;--b:#2e1065"></i><i style="--a:#0e7490;--b:#083344"></i><i style="--a:#b45309;--b:#451a03"></i><i style="--a:#1e40af;--b:#172554"></i><i style="--a:#86198f;--b:#2e1065"></i><i style="--a:#047857;--b:#022c22"></i>
+  <i style="--a:#4c1d95;--b:#1e1b4b"></i><i style="--a:#be185d;--b:#500724"></i><i style="--a:#0e7490;--b:#082f49"></i><i style="--a:#a16207;--b:#422006"></i><i style="--a:#3730a3;--b:#0f172a"></i><i style="--a:#7e22ce;--b:#2e1065"></i><i style="--a:#0f766e;--b:#042f2e"></i><i style="--a:#c2410c;--b:#431407"></i><i style="--a:#1d4ed8;--b:#172554"></i><i style="--a:#9d174d;--b:#3b0764"></i><i style="--a:#065f46;--b:#022c22"></i><i style="--a:#6d28d9;--b:#1e1b4b"></i>
+  <i style="--a:#0369a1;--b:#082f49"></i><i style="--a:#b45309;--b:#431407"></i><i style="--a:#4338ca;--b:#1e1b4b"></i><i style="--a:#be123c;--b:#4c0519"></i><i style="--a:#15803d;--b:#052e16"></i><i style="--a:#a21caf;--b:#3b0764"></i><i style="--a:#1e40af;--b:#172554"></i><i style="--a:#a16207;--b:#422006"></i><i style="--a:#5b21b6;--b:#2e1065"></i><i style="--a:#0e7490;--b:#083344"></i><i style="--a:#9f1239;--b:#4c0519"></i><i style="--a:#047857;--b:#022c22"></i>
+  <i style="--a:#4c1d95;--b:#1e1b4b"></i><i style="--a:#0e7490;--b:#082f49"></i><i style="--a:#9d174d;--b:#3b0764"></i><i style="--a:#b45309;--b:#431407"></i><i style="--a:#3730a3;--b:#0f172a"></i><i style="--a:#065f46;--b:#022c22"></i><i style="--a:#7e22ce;--b:#2e1065"></i><i style="--a:#be123c;--b:#4c0519"></i><i style="--a:#1d4ed8;--b:#172554"></i><i style="--a:#a16207;--b:#422006"></i><i style="--a:#0f766e;--b:#042f2e"></i><i style="--a:#6d28d9;--b:#1e1b4b"></i>
+</div></div>
 
-<header class="header">
-  <div class="shell">
-    <a class="brand" href="./" aria-label="TV Server"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M24 10l8 8 8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="18" width="46" height="32" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M28 27.5v13l11-6.5z" fill="currentColor"/><path d="M22 55h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><span>TV Server</span></a>
-    <span class="pill" id="status-badge">Not connected</span>
-  </div>
-</header>
-<p class="notice" role="status">You’re not connected. Enable NetBird to connect.</p>
+<span class="status-pill" id="status-badge">Not connected</span>
 
 <main id="main">
-  <div class="shell hero">
-    <div>
-      <p class="label">Private home server</p>
-      <h1>TV Server is invite only.</h1>
-      <p class="lead">Movies, shows, files and passwords, running at home. Nothing is open to the internet, so you get in through NetBird, a private VPN. Ask ghazi for an invite:</p>
-
-      <form class="invite" id="invite-form" novalidate>
-        <label class="hp" for="invite-botcheck">Leave this empty</label>
-        <input class="hp" id="invite-botcheck" name="botcheck" type="checkbox" tabindex="-1" aria-hidden="true">
-        <div class="invite-row">
-          <div class="field">
-            <label class="label" for="invite-name">Name</label>
-            <input id="invite-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Your name">
-          </div>
-          <div class="field">
-            <label class="label" for="invite-email">Email</label>
-            <input id="invite-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required placeholder="you@example.com">
-          </div>
-          <button class="btn" id="invite-send" type="submit">Request invite</button>
-        </div>
-        <p class="form-msg" id="invite-status" aria-live="polite"></p>
-      </form>
-    </div>
-
-    <section class="panel" id="status" aria-labelledby="conn-title">
-      <div class="conn-top">
-        <h2 class="label" id="conn-title">Connection</h2>
-      </div>
-      <div class="path" aria-hidden="true">
-        <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M2 19.5h20"/></svg>This device</div>
-        <div class="link broken"></div>
-        <div class="node"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 8 7.5 9.5 4.3-1.5 7.5-5 7.5-9.5V6z"/><path d="M9 12h6M12 9v6"/></svg>NetBird</div>
-        <div class="link"></div>
-        <div class="node server"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 10l8 8 8-8"/><rect x="9" y="18" width="46" height="32" rx="7"/><path d="M28 27.5v13l11-6.5z" fill="currentColor"/><path d="M22 55h20"/></svg>TV Server</div>
-      </div>
-      <p class="conn-text" id="status-text">You’re not connected. Enable NetBird to connect.</p>
-      <p class="conn-sub small muted">Already set up? Turn NetBird on and reload. If this page stays, give it a minute.</p>
-    </section>
+  <div class="logo">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M24 10l8 8 8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="18" width="46" height="32" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M28 27.5v13l11-6.5z" fill="currentColor"/><path d="M22 55h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+    <h1>TV Server</h1>
+    <p>Movies, shows and files, running at home.</p>
   </div>
 
-  <section class="shell section install" aria-labelledby="install-title">
-    <div class="install-side">
-      <p class="label">How to get in</p>
-      <h2 id="install-title">Three steps, once per person</h2>
-      <ol class="steps">
-        <li><h3>Request access from ghazi</h3><p>Use the form above. You get a NetBird invite and a TV Server login.</p></li>
-        <li><h3>Install NetBird and sign in</h3><p>Choose your device in the setup box. Use the email and password from the invite.</p></li>
-        <li><h3>Open tvserver.homes</h3><p>With NetBird on, it opens Home. Leave NetBird on; it only carries server traffic.</p></li>
-      </ol>
-    </div>
-
-    <div class="panel">
-      <p class="label phone-only">Install NetBird</p>
-      <h2 class="phone-only">Set up your device</h2>
-      <div class="field picker">
-        <label class="label" for="device-pick">Device</label>
-        <select id="device-pick">
-          <option value="ios">iPhone or iPad</option>
-          <option value="android">Android</option>
-          <option value="windows">Windows</option>
-          <option value="mac">Mac</option>
-        </select>
-      </div>
-      <div class="device-panel" data-device="ios">
-        <ol>
-          <li><span><strong>Request access from ghazi first</strong> with the <a href="#invite-form">invite form</a>. Without an invite from ghazi, NetBird sign-in won't work.</span></li>
-          <li><span>Install <strong>NetBird P2P VPN</strong> from the <a href="https://apps.apple.com/us/app/netbird-p2p-vpn/id6469329339" rel="noopener" target="_blank">App Store</a>.</span></li>
-          <li><span>Open NetBird and tap the big <strong>connect</strong> button.</span></li>
-          <li><span>When iPhone asks to <strong>add VPN configurations</strong>, tap <strong>Allow</strong>. You may need Face ID or your passcode.</span></li>
-          <li><span>A sign-in page opens. Sign in with the email and password from your NetBird invitation.</span></li>
-          <li><span>Go back to the NetBird app. It should say <strong>Connected</strong>.</span></li>
-        </ol>
-        <p class="device-tip">You can also switch it on and off in iPhone <strong>Settings &gt; VPN</strong>.</p>
-      </div>
-      <div class="device-panel" data-device="android">
-        <ol>
-          <li><span><strong>Request access from ghazi first</strong> with the <a href="#invite-form">invite form</a>. Without an invite from ghazi, NetBird sign-in won't work.</span></li>
-          <li><span>Install <strong>NetBird</strong> from <a href="https://play.google.com/store/apps/details?id=io.netbird.client" rel="noopener" target="_blank">Google Play</a>.</span></li>
-          <li><span>Open it. If it says it is using the default server, tap <strong>Continue</strong>.</span></li>
-          <li><span>Tap the NetBird logo button, then tap <strong>OK</strong> when Android asks to allow a VPN connection.</span></li>
-          <li><span>A sign-in page opens in your browser. Sign in with the email and password from your NetBird invitation, then close the browser.</span></li>
-          <li><span>The app should say <strong>Connected</strong>.</span></li>
-        </ol>
-        <p class="device-tip">Optional: keep it always on. In Android <strong>Settings &gt; Network &amp; internet &gt; VPN</strong>, tap the gear next to NetBird and turn on <strong>Always-on VPN</strong>. Menu names differ between brands, so search Settings for "VPN".</p>
-      </div>
-      <div class="device-panel" data-device="windows">
-        <ol>
-          <li><span><strong>Request access from ghazi first</strong> with the <a href="#invite-form">invite form</a>. Without an invite from ghazi, NetBird sign-in won't work.</span></li>
-          <li><span>Download the installer from the <a href="https://docs.netbird.io/get-started/install/windows" rel="noopener" target="_blank">NetBird Windows page</a> and run it. Click <strong>Yes</strong> and <strong>Next</strong> through the installer.</span></li>
-          <li><span>Find the NetBird icon at the bottom right of the screen, next to the clock. If you don't see it, click the small <strong>^</strong> arrow there.</span></li>
-          <li><span>Click the NetBird icon, then <strong>Connect</strong>.</span></li>
-          <li><span>Your browser opens. Sign in with the email and password from your NetBird invitation.</span></li>
-          <li><span>The NetBird icon changes to show it is connected.</span></li>
-        </ol>
-      </div>
-      <div class="device-panel" data-device="mac">
-        <ol>
-          <li><span><strong>Request access from ghazi first</strong> with the <a href="#invite-form">invite form</a>. Without an invite from ghazi, NetBird sign-in won't work.</span></li>
-          <li><span>Download the installer from the <a href="https://docs.netbird.io/get-started/install/macos" rel="noopener" target="_blank">NetBird macOS page</a> and install it. Pick <strong>Apple Silicon</strong> for most Macs from 2021 on, <strong>Intel</strong> for older ones.</span></li>
-          <li><span>Open <strong>NetBird</strong> from Applications. If it asks which server to use, choose <strong>NetBird Cloud</strong>.</span></li>
-          <li><span>If your Mac asks to allow a VPN configuration or a system extension, click <strong>Allow</strong>. On some Macs this is under <strong>System Settings &gt; Privacy &amp; Security</strong>.</span></li>
-          <li><span>Click the NetBird icon in the menu bar at the top of the screen, then <strong>Connect</strong>.</span></li>
-          <li><span>Your browser opens. Sign in with the email and password from your NetBird invitation.</span></li>
-        </ol>
-      </div>
-      <p class="done phone-only">Done? Open <strong>tvserver.homes</strong>. With NetBird on, it opens Home. Leave NetBird on; it only carries server traffic.</p>
-    </div>
+  <section class="card" aria-labelledby="invite-title">
+    <p class="alert" id="status-text" role="status"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd"/></svg><span>You’re not connected. Enable NetBird to connect.</span></p>
+    <h2 class="card-title" id="invite-title">Get an invite</h2>
+    <p class="card-sub">ghazi sends you a NetBird invite and a TV Server login.</p>
+    <form class="invite" id="invite-form" novalidate>
+      <label class="hp" for="invite-botcheck">Leave this empty</label>
+      <input class="hp" id="invite-botcheck" name="botcheck" type="checkbox" tabindex="-1" aria-hidden="true">
+      <label class="sr-only" for="invite-name">Name</label>
+      <input class="input" id="invite-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Name">
+      <label class="sr-only" for="invite-email">Email</label>
+      <input class="input" id="invite-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required placeholder="Email">
+      <button class="btn" id="invite-send" type="submit">Request invite</button>
+      <p class="form-msg" id="invite-status" aria-live="polite"></p>
+    </form>
   </section>
 
-</main>
+  <section class="card" aria-labelledby="steps-title">
+    <h2 class="card-title" id="steps-title">Getting in</h2>
+    <ol class="steps" style="margin-top: 18px">
+      <li><div><h3>Ask ghazi for an invite</h3><p>Use the invite form.</p></div></li>
+      <li><div><h3>Install NetBird</h3><p>Sign in with the email and password from the invite.</p></div></li>
+      <li><div><h3>Open tvserver.homes</h3><p>With NetBird on, it opens Home. Sign in with your TV Server login.</p></div></li>
+    </ol>
 
-<footer class="footer">
-  <div class="shell">
-    <span>TV Server, a private home server run by ghazi.</span>
-  </div>
-</footer>
+    <details class="fold" id="install" open>
+      <summary>Show install steps</summary>
+      <div class="divider" aria-hidden="true">Installing NetBird</div>
+      <div class="tabs" role="tablist" aria-label="Device">
+        <button class="tab" role="tab" id="tab-ios" aria-controls="panel-ios" data-device="ios" type="button">iPhone</button>
+        <button class="tab" role="tab" id="tab-android" aria-controls="panel-android" data-device="android" type="button">Android</button>
+        <button class="tab" role="tab" id="tab-windows" aria-controls="panel-windows" data-device="windows" type="button">Windows</button>
+        <button class="tab" role="tab" id="tab-mac" aria-controls="panel-mac" data-device="mac" type="button">Mac</button>
+      </div>
+      <div class="device-panel" role="tabpanel" id="panel-ios" aria-labelledby="tab-ios" data-device="ios">
+        <ol>
+          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
+          <li>Get <strong>NetBird P2P VPN</strong> from the <a href="https://apps.apple.com/us/app/netbird-p2p-vpn/id6469329339" rel="noopener" target="_blank">App Store</a>.</li>
+          <li>Open it and tap <strong>connect</strong>.</li>
+          <li>Tap <strong>Allow</strong> when it asks to add a VPN.</li>
+          <li>Sign in with the email and password from the invite.</li>
+          <li>It should say <strong>Connected</strong>.</li>
+        </ol>
+      </div>
+      <div class="device-panel" role="tabpanel" id="panel-android" aria-labelledby="tab-android" data-device="android">
+        <ol>
+          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
+          <li>Get <strong>NetBird</strong> from <a href="https://play.google.com/store/apps/details?id=io.netbird.client" rel="noopener" target="_blank">Google Play</a>.</li>
+          <li>Open it. If it mentions the default server, tap <strong>Continue</strong>.</li>
+          <li>Tap the logo button, then <strong>OK</strong> to allow the VPN.</li>
+          <li>Sign in with the email and password from the invite.</li>
+          <li>It should say <strong>Connected</strong>.</li>
+        </ol>
+      </div>
+      <div class="device-panel" role="tabpanel" id="panel-windows" aria-labelledby="tab-windows" data-device="windows">
+        <ol>
+          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
+          <li>Download it from the <a href="https://docs.netbird.io/get-started/install/windows" rel="noopener" target="_blank">NetBird site</a> and install it.</li>
+          <li>Click the NetBird icon next to the clock (under the <strong>^</strong> arrow if you can't see it).</li>
+          <li>Click <strong>Connect</strong>.</li>
+          <li>Sign in with the email and password from the invite.</li>
+        </ol>
+      </div>
+      <div class="device-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac" data-device="mac">
+        <ol>
+          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
+          <li>Download it from the <a href="https://docs.netbird.io/get-started/install/macos" rel="noopener" target="_blank">NetBird site</a>. <strong>Apple Silicon</strong> for Macs from 2021 on, <strong>Intel</strong> for older ones.</li>
+          <li>Open NetBird. If it asks for a server, pick <strong>NetBird Cloud</strong>.</li>
+          <li>Click <strong>Allow</strong> if your Mac asks about a VPN or system extension.</li>
+          <li>Click the NetBird icon in the menu bar, then <strong>Connect</strong>.</li>
+          <li>Sign in with the email and password from the invite.</li>
+        </ol>
+      </div>
+    </details>
+  </section>
+</main>
+<p class="credit" id="credit" hidden>Movie and show images from <a href="https://www.themoviedb.org/" rel="noopener" target="_blank">TMDB</a>. This page uses the TMDB API but is not endorsed or certified by TMDB.</p>
 
 <script>
 (function () {
-  // Links to the invite form also put the cursor in the email field.
-  var links = document.querySelectorAll('a[href="#invite-form"]');
-  for (var i = 0; i < links.length; i++) links[i].addEventListener("click", function () {
-    setTimeout(function () { document.getElementById("invite-email").focus({ preventScroll: true }); }, 50);
-  });
+  // Rotate trending backdrops behind the page, one every 6 seconds (Jellyseerr's speed).
+  var wall = document.querySelector(".wall");
+  var IMG = "https://image.tmdb.org/t/p/w1280";
+  fetch("backdrops.json", { cache: "no-cache" })
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (list) {
+      list = (list || []).filter(function (b) { return b && b.path; });
+      if (!list.length) return;
+      for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = list[i]; list[i] = list[j]; list[j] = t; }
+      var a = document.createElement("div"), b = document.createElement("div");
+      a.className = b.className = "shot";
+      wall.insertBefore(b, wall.firstChild); wall.insertBefore(a, wall.firstChild);
+      var n = 0, front = a, back = b;
+      function show(k, el, then) {
+        var img = new Image();
+        img.onload = function () { el.style.backgroundImage = "url(" + img.src + ")"; then(); };
+        img.src = IMG + list[k % list.length].path;
+      }
+      show(0, front, function () {
+        front.classList.add("on"); wall.classList.add("live");
+        document.getElementById("credit").hidden = false;
+        if (list.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        setInterval(function () {
+          n++;
+          show(n, back, function () { back.classList.add("on"); front.classList.remove("on"); var t = front; front = back; back = t; });
+        }, 6000);
+      });
+    })
+    .catch(function () {});
 })();
 </script>
 
 <script>
 (function () {
-  // Show one device's steps at a time, starting with the visitor's own device.
-  document.documentElement.classList.add("js");
-  var pick = document.getElementById("device-pick");
+  // Device tabs: open the visitor's own device first; arrow keys move between tabs.
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
   var panels = document.querySelectorAll(".device-panel");
   var ua = navigator.userAgent;
   var guess = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? "ios"
     : /Android/.test(ua) ? "android"
     : /Windows/.test(ua) ? "windows"
     : /Macintosh/.test(ua) ? "mac" : "ios";
-  function show(k) {
+  function show(k, focus) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute("data-device") === k;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
     for (var i = 0; i < panels.length; i++) panels[i].hidden = panels[i].getAttribute("data-device") !== k;
   }
-  pick.value = guess;
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { show(t.getAttribute("data-device")); });
+    t.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); show(tabs[(i + d + tabs.length) % tabs.length].getAttribute("data-device"), true); }
+    });
+  });
   show(guess);
-  pick.addEventListener("change", function () { show(pick.value); });
+
+  // Phones start with the install steps folded; the device tab still opens to the visitor's own device.
+  if (window.matchMedia("(max-width: 639px)").matches) document.getElementById("install").open = false;
+
+  // Links to the invite form also put the cursor in the name field.
+  var links = document.querySelectorAll('a[href="#invite-form"]');
+  for (var j = 0; j < links.length; j++) links[j].addEventListener("click", function () {
+    setTimeout(function () { document.getElementById("invite-name").focus({ preventScroll: true }); }, 50);
+  });
 })();
 </script>
 
