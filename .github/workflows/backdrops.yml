@@ -21,11 +21,26 @@ jobs:
       - name: Fetch trending backdrops
         env:
           TMDB_TOKEN: ${{ secrets.TMDB_TOKEN }}
+        shell: bash
         run: |
-          curl -fsS -H "Authorization: Bearer $TMDB_TOKEN" -H "Accept: application/json" \
-            "https://api.themoviedb.org/3/trending/all/week?language=en-US" \
-          | jq '[.results[] | select(.backdrop_path != null and (.adult // false | not))
-                 | {path: .backdrop_path, title: (.title // .name)}] | .[0:20]' > backdrops.json
+          # Works with either TMDB credential: the long API Read Access Token
+          # (sent as a Bearer header) or the 32-character API Key (sent as api_key).
+          key="$(printf '%s' "$TMDB_TOKEN" | tr -d '[:space:]')"
+          key="${key#Bearer}"
+          url="https://api.themoviedb.org/3/trending/all/week?language=en-US"
+          if [[ "$key" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            code=$(curl -sS -o trending.json -w '%{http_code}' "$url&api_key=$key")
+          else
+            code=$(curl -sS -o trending.json -w '%{http_code}' -H "Authorization: Bearer $key" "$url")
+          fi
+          if [ "$code" != "200" ]; then
+            echo "::error::TMDB answered $code: $(jq -r '.status_message // empty' trending.json 2>/dev/null)"
+            echo "Check the TMDB_TOKEN secret (TMDB > Settings > API: API Read Access Token or API Key)."
+            exit 1
+          fi
+          jq '[.results[] | select(.backdrop_path != null and (.adult // false | not))
+               | {path: .backdrop_path, title: (.title // .name)}] | .[0:20]' trending.json > backdrops.json
+          rm trending.json
           test "$(jq length backdrops.json)" -gt 0
 
       - name: Commit and rebuild the site if it changed
