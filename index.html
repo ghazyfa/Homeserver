@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Styled like the Jellyseerr sign-in page (values from its Tailwind source): gray-900 page, a dimmed
-   poster wall behind everything, the stacked logo, then translucent blurred cards with indigo buttons.
+   poster wall behind everything, the stacked logo, then translucent blurred cards. Accents follow the logo (guides/design/logo-tokens.md).
    Card 1 is the invite form, card 2 the three steps and the device tabs (folded on phones). */
 :root {
   --gray-900: #111827;
@@ -30,9 +30,14 @@
   --gray-300: #d1d5db;
   --gray-200: #e5e7eb;
   --neutral-200: #e5e5e5;
-  --indigo-400: #818cf8;
-  --indigo-500: #6366f1;
-  --indigo-600: #4f46e5;
+  --tv-lilac: #C395FC;
+  --tv-blue: #4F65F5;
+  --tv-violet: #7C5CF0;
+  --tv-blue-press: #4558E8;
+  --tv-grad: linear-gradient(135deg, #C395FC 0%, #4F65F5 100%);
+  --tv-grad-fill: linear-gradient(to bottom right, #4F65F5 0%, #7C5CF0 100%);
+  --tv-tint: rgb(195 149 252 / .14);
+  --tv-glow: rgb(124 92 240 / .35);
   --red-500: #ef4444;
   --red-200: #fecaca;
   --green-400: #4ade80;
@@ -47,11 +52,11 @@ html { background: var(--gray-900); scroll-behavior: smooth; }
 body { margin: 0; min-height: 100vh; background: var(--gray-900); color: var(--gray-300); font: 400 15px/1.55 var(--font); -webkit-font-smoothing: antialiased; position: relative; overflow-x: hidden; }
 h1, h2, h3, p, ol { margin: 0; }
 strong { color: var(--gray-200); font-weight: 600; }
-a { color: var(--indigo-500); text-decoration: none; }
-a:hover { color: var(--indigo-400); }
-:focus-visible { outline: 2px solid var(--indigo-500); outline-offset: 2px; }
+a { color: var(--tv-lilac); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--tv-lilac); outline-offset: 2px; }
 [hidden] { display: none !important; }
-.skip { position: absolute; left: 16px; top: -60px; z-index: 60; background: var(--indigo-600); color: #fff; padding: 8px 12px; border-radius: var(--r-md); }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 60; background: var(--tv-blue); color: #fff; padding: 8px 12px; border-radius: var(--r-md); }
 .skip:focus { top: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -60,7 +65,7 @@ a:hover { color: var(--indigo-400); }
 .wall { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .wall .posters { position: absolute; inset: -40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); grid-auto-rows: 180px; gap: 14px; transform: rotate(-8deg) scale(1.15); filter: blur(2px) saturate(1.2); opacity: 0.55; }
 .wall .posters i { border-radius: var(--r-lg); background: linear-gradient(160deg, var(--a), var(--b)); }
-.wall::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%); }
+.wall::after { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 45% at 50% 0%, var(--tv-glow), transparent 70%), linear-gradient(180deg, rgba(45, 55, 72, 0.47) 0%, #1A202E 100%); }
 /* Live backdrops: this week's trending movies and shows from TMDB (backdrops.json, refreshed daily by
    a GitHub Action). They fade in over the tiles, like Jellyseerr's ImageFader; the tiles stay as the fallback. */
 .wall .shot { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .3s ease-in; }
@@ -73,7 +78,7 @@ a:hover { color: var(--indigo-400); }
 
 main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .logo { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; color: #fff; }
-.logo svg { width: 84px; height: 84px; color: var(--indigo-400); filter: drop-shadow(0 6px 24px rgba(99, 102, 241, 0.45)); }
+.logo img { width: 84px; height: 84px; filter: drop-shadow(0 6px 24px var(--tv-glow)); }
 .logo h1 { font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
 .logo p { color: var(--gray-400); font-size: 14px; }
 
@@ -88,9 +93,9 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .invite { margin-top: 20px; display: grid; gap: 12px; scroll-margin-top: 24px; }
 .input { display: block; width: 100%; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid var(--gray-500); border-radius: var(--r-md); background: rgba(55, 65, 81, 0.8); color: #fff; font: 400 16px var(--font); transition: border-color .15s, box-shadow .15s; }
 .input::placeholder { color: var(--gray-400); }
-.input:focus { outline: none; border-color: var(--indigo-500); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.45); }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 40px; padding: 0 16px; border: 1px solid var(--indigo-500); border-radius: var(--r-md); background: rgba(79, 70, 229, 0.8); color: #fff; font: 500 14px/1.25 var(--font); cursor: pointer; transition: background-color .15s; }
-.btn:hover { background: var(--indigo-600); }
+.input:focus { outline: none; border-color: var(--tv-lilac); box-shadow: 0 0 0 2px rgb(195 149 252 / .35); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 40px; padding: 0 16px; border: 1px solid rgb(195 149 252 / .4); border-radius: var(--r-md); background: var(--tv-grad-fill); color: #fff; font: 500 14px/1.25 var(--font); cursor: pointer; transition: box-shadow .15s, background-color .15s; }
+.btn:hover { background: var(--tv-blue-press); box-shadow: 0 0 0 3px var(--tv-tint); }
 .btn:disabled { opacity: .5; cursor: progress; }
 .form-msg { min-height: 1.4em; margin-top: -4px; font-size: 14px; color: var(--gray-400); text-align: center; }
 .form-msg:empty { display: none; }
@@ -103,7 +108,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .steps { list-style: none; padding: 0; display: grid; gap: 12px; counter-reset: step; }
 .steps li { counter-increment: step; }
 .steps li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
-.steps li::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(79, 70, 229, 0.25); border: 1px solid var(--indigo-500); color: #c7d2fe; font-size: 13px; font-weight: 600; }
+.steps li::before { content: counter(step); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--tv-tint); border: 1px solid rgb(195 149 252 / .6); color: var(--tv-lilac); font-size: 13px; font-weight: 600; }
 .steps h3 { font-size: 15px; font-weight: 600; color: var(--gray-200); line-height: 28px; }
 .steps p { color: var(--gray-400); font-size: 14px; line-height: 1.45; }
 
@@ -115,16 +120,16 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--gray-600); overflow-x: auto; }
 .tab { flex: none; padding: 0 0 8px; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--gray-400); font: 500 14px/1.5 var(--font); cursor: pointer; transition: color .15s; }
 .tab:hover { color: var(--gray-200); }
-.tab[aria-selected="true"] { color: var(--indigo-400); border-bottom-color: var(--indigo-500); }
+.tab[aria-selected="true"] { color: var(--tv-lilac); background: var(--tv-grad) bottom / 100% 2px no-repeat; }
 .device-panel { padding-top: 14px; }
 .device-panel ol { padding-left: 1.4em; display: grid; gap: 5px; font-size: 14px; line-height: 1.5; }
-.device-panel li::marker { color: var(--indigo-400); font-weight: 600; }
+.device-panel li::marker { color: var(--tv-lilac); font-weight: 600; }
 
 /* Desktop: two columns. The logo and invite card on the left, the steps and device tabs on the right. */
 @media (min-width: 960px) {
   main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px 32px; align-items: start; max-width: 1080px; margin: 0 auto; padding: 72px 32px 48px; }
   .logo { grid-column: 1; align-items: flex-start; margin-top: 0; text-align: left; }
-  .logo svg { width: 72px; height: 72px; }
+  .logo img { width: 72px; height: 72px; }
   .logo h1 { font-size: 44px; }
   .logo p { font-size: 16px; }
   main > .card { margin: 0; max-width: none; }
@@ -137,7 +142,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 @media (max-width: 639px) {
   main { padding-top: 48px; }
   .logo { margin-top: 0; gap: 6px; }
-  .logo svg { width: 60px; height: 60px; }
+  .logo img { width: 60px; height: 60px; }
   .logo h1 { font-size: 28px; }
   .card { margin-top: 20px; padding: 24px 20px; border-radius: var(--r-lg); }
   .fold > summary { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 1px solid var(--gray-600); border-radius: var(--r-md); color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; }
@@ -163,7 +168,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 
 <main id="main">
   <div class="logo">
-    <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M24 10l8 8 8-8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="18" width="46" height="32" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M28 27.5v13l11-6.5z" fill="currentColor"/><path d="M22 55h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+    <img src="logo.svg" alt="" width="84" height="84">
     <h1>TV Server</h1>
     <p>Movies, shows and files, running at home.</p>
   </div>
