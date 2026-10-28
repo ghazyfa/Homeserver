@@ -71,7 +71,7 @@ a:hover { text-decoration: underline; }
 .wall .shot { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .3s ease-in; }
 .wall .shot.on { opacity: 1; }
 .wall.live .posters { display: none; }
-.credit { position: relative; z-index: 40; max-width: 448px; margin: 0 auto; padding: 0 16px 24px; text-align: center; color: var(--gray-500); font-size: 12px; }
+.credit { position: relative; z-index: 40; max-width: 448px; margin: 0 auto; padding: 0 16px 24px; text-align: center; color: var(--gray-400); font-size: 12px; }
 
 .status-pill { position: absolute; top: 16px; right: 16px; z-index: 50; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--r-md); border: 1px solid var(--gray-600); background: rgba(31, 41, 55, 0.8); color: var(--gray-200); font-size: 13px; font-weight: 500; }
 .status-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red-500); }
@@ -87,8 +87,8 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .card-title { text-align: center; font-size: 18px; font-weight: 700; color: var(--neutral-200); }
 .card-sub { text-align: center; margin-top: 4px; color: var(--gray-400); font-size: 14px; }
 
-.alert { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid var(--red-500); background: rgba(239, 68, 68, 0.2); color: var(--red-200); font-size: 14px; line-height: 1.45; }
-.alert svg { width: 18px; height: 18px; flex: none; margin-top: 1px; color: #fca5a5; }
+.alert { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; padding: 10px 12px; border-radius: var(--r-md); border: 1px solid rgb(195 149 252 / .35); background: var(--tv-tint); color: var(--gray-200); font-size: 14px; line-height: 1.45; }
+.alert svg { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--tv-lilac); }
 
 .invite { margin-top: 20px; display: grid; gap: 12px; scroll-margin-top: 24px; }
 .input { display: block; width: 100%; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid var(--gray-500); border-radius: var(--r-md); background: rgba(55, 65, 81, 0.8); color: #fff; font: 400 16px var(--font); transition: border-color .15s, box-shadow .15s; }
@@ -117,11 +117,15 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .fold > summary::-webkit-details-marker { display: none; }
 .fold-head { display: none; }
 @media (min-width: 640px) { .fold > summary { display: none; } }
-.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--gray-600); overflow-x: auto; }
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--gray-600); overflow-x: auto; overflow-y: hidden; }
 .tab { flex: none; padding: 0 0 8px; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--gray-400); font: 500 14px/1.5 var(--font); cursor: pointer; transition: color .15s; }
 .tab:hover { color: var(--gray-200); }
 .tab[aria-selected="true"] { color: var(--tv-lilac); background: var(--tv-grad) bottom / 100% 2px no-repeat; }
 .device-panel { padding-top: 14px; }
+/* All panels share one grid cell, so the box keeps the height of the longest list and nothing jumps on switching tabs. */
+.panels { display: grid; }
+.panels > .device-panel { grid-area: 1 / 1; }
+.panels > .device-panel[hidden] { display: block !important; visibility: hidden; }
 .device-panel ol { padding-left: 1.4em; display: grid; gap: 5px; font-size: 14px; line-height: 1.5; }
 .device-panel li::marker { color: var(--tv-lilac); font-weight: 600; }
 
@@ -174,10 +178,12 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
   </div>
 
   <section class="card" aria-labelledby="invite-title">
-    <p class="alert" id="status-text" role="status"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd"/></svg><span>You’re not connected. Enable NetBird to connect.</span></p>
+    <p class="alert" id="status-text" role="status"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd"/></svg><span>Not connected yet. Get an invite below, then turn on NetBird.</span></p>
     <h2 class="card-title" id="invite-title">Get an invite</h2>
     <p class="card-sub">ghazi sends you a NetBird invite and a TV Server login.</p>
-    <form class="invite" id="invite-form" novalidate>
+    <form class="invite" id="invite-form" method="post" action="https://api.web3forms.com/submit" novalidate>
+      <input type="hidden" name="access_key" value="01c24837-8b33-4cd4-bcb8-e8865789bdf4">
+      <input type="hidden" name="subject" value="TV Server invite request">
       <label class="hp" for="invite-botcheck">Leave this empty</label>
       <input class="hp" id="invite-botcheck" name="botcheck" type="checkbox" tabindex="-1" aria-hidden="true">
       <label class="sr-only" for="invite-name">Name</label>
@@ -193,8 +199,8 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
     <h2 class="card-title" id="steps-title">Getting in</h2>
     <ol class="steps" style="margin-top: 18px">
       <li><div><h3>Ask ghazi for an invite</h3><p>Use the invite form.</p></div></li>
-      <li><div><h3>Install NetBird</h3><p>Sign in with the email and password from the invite.</p></div></li>
-      <li><div><h3>Open tvserver.homes</h3><p>With NetBird on, it opens Home. Sign in with your TV Server login.</p></div></li>
+      <li><div><h3>Install NetBird</h3><p>Install it, then sign in with the email and password from the invite.</p></div></li>
+      <li><div><h3>Open tvserver.homes</h3><p>With NetBird on, it opens the TV Server home page. Sign in with your TV Server login.</p></div></li>
     </ol>
 
     <details class="fold" id="install" open>
@@ -206,9 +212,9 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
         <button class="tab" role="tab" id="tab-windows" aria-controls="panel-windows" data-device="windows" type="button">Windows</button>
         <button class="tab" role="tab" id="tab-mac" aria-controls="panel-mac" data-device="mac" type="button">Mac</button>
       </div>
+      <div class="panels">
       <div class="device-panel" role="tabpanel" id="panel-ios" aria-labelledby="tab-ios" data-device="ios">
         <ol>
-          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
           <li>Get <strong>NetBird P2P VPN</strong> from the <a href="https://apps.apple.com/us/app/netbird-p2p-vpn/id6469329339" rel="noopener" target="_blank">App Store</a>.</li>
           <li>Open it and tap <strong>connect</strong>.</li>
           <li>Tap <strong>Allow</strong> when it asks to add a VPN.</li>
@@ -218,7 +224,6 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
       </div>
       <div class="device-panel" role="tabpanel" id="panel-android" aria-labelledby="tab-android" data-device="android">
         <ol>
-          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
           <li>Get <strong>NetBird</strong> from <a href="https://play.google.com/store/apps/details?id=io.netbird.client" rel="noopener" target="_blank">Google Play</a>.</li>
           <li>Open it. If it mentions the default server, tap <strong>Continue</strong>.</li>
           <li>Tap the logo button, then <strong>OK</strong> to allow the VPN.</li>
@@ -228,7 +233,6 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
       </div>
       <div class="device-panel" role="tabpanel" id="panel-windows" aria-labelledby="tab-windows" data-device="windows">
         <ol>
-          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
           <li>Download it from the <a href="https://docs.netbird.io/get-started/install/windows" rel="noopener" target="_blank">NetBird site</a> and install it.</li>
           <li>Click the NetBird icon next to the clock (under the <strong>^</strong> arrow if you can't see it).</li>
           <li>Click <strong>Connect</strong>.</li>
@@ -237,13 +241,13 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
       </div>
       <div class="device-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac" data-device="mac">
         <ol>
-          <li>Get an invite from ghazi first. Without it, sign-in won't work.</li>
           <li>Download it from the <a href="https://docs.netbird.io/get-started/install/macos" rel="noopener" target="_blank">NetBird site</a>. <strong>Apple Silicon</strong> for Macs from 2021 on, <strong>Intel</strong> for older ones.</li>
           <li>Open NetBird. If it asks for a server, pick <strong>NetBird Cloud</strong>.</li>
           <li>Click <strong>Allow</strong> if your Mac asks about a VPN or system extension.</li>
           <li>Click the NetBird icon in the menu bar, then <strong>Connect</strong>.</li>
           <li>Sign in with the email and password from the invite.</li>
         </ol>
+      </div>
       </div>
     </details>
   </section>
