@@ -71,18 +71,19 @@ a:hover { text-decoration: underline; }
 .wall .shot { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity .3s ease-in; }
 .wall .shot.on { opacity: 1; }
 .wall.live .posters { display: none; }
+/* Keep photos in the background: blurred, a little desaturated, and under a dark wash that is heaviest on the left where the title sits. */
+.wall .shot { inset: -24px; filter: blur(6px) saturate(.75) brightness(.8); }
+.wall.live::after { background: radial-gradient(60% 45% at 50% 0%, var(--tv-glow), transparent 70%), linear-gradient(100deg, rgba(17, 24, 39, 0.85) 0%, rgba(17, 24, 39, 0.72) 55%, rgba(17, 24, 39, 0.8) 100%), linear-gradient(180deg, rgba(17, 24, 39, 0) 40%, #111827 100%); }
 .credit { position: relative; z-index: 40; max-width: 448px; margin: 0 auto; padding: 0 16px 24px; text-align: center; color: var(--gray-400); font-size: 12px; }
 
-.status-pill { position: absolute; top: 16px; right: 16px; z-index: 50; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--r-md); border: 1px solid var(--gray-600); background: rgba(31, 41, 55, 0.8); color: var(--gray-200); font-size: 13px; font-weight: 500; }
-.status-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red-500); }
 
 main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .logo { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 24px; color: #fff; }
 .logo img { width: 84px; height: 84px; filter: drop-shadow(0 6px 24px var(--tv-glow)); }
 .logo h1 { font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; }
-.logo p { color: var(--gray-400); font-size: 14px; }
+.logo p { color: var(--gray-300); font-size: 14px; }
 
-.card { width: 100%; max-width: 448px; margin: 28px auto 0; background: rgba(31, 41, 55, 0.5); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); border-radius: var(--r-lg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3); padding: 32px 40px; }
+.card { width: 100%; max-width: 448px; margin: 28px auto 0; background: rgba(31, 41, 55, 0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: var(--r-lg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3); padding: 32px 40px; }
 .card + .card { margin-top: 16px; }
 .card-title { text-align: center; font-size: 18px; font-weight: 700; color: var(--neutral-200); }
 .card-sub { text-align: center; margin-top: 4px; color: var(--gray-400); font-size: 14px; }
@@ -93,6 +94,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 .invite { margin-top: 20px; display: grid; gap: 12px; scroll-margin-top: 24px; }
 .input { display: block; width: 100%; min-width: 0; height: 40px; padding: 0 12px; border: 1px solid var(--gray-500); border-radius: var(--r-md); background: rgba(55, 65, 81, 0.8); color: #fff; font: 400 16px var(--font); transition: border-color .15s, box-shadow .15s; }
 .input::placeholder { color: var(--gray-400); }
+.input[aria-invalid="true"] { border-color: var(--red-500); }
 .input:focus { outline: none; border-color: var(--tv-lilac); box-shadow: 0 0 0 2px rgb(195 149 252 / .35); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 40px; padding: 0 16px; border: 1px solid rgb(195 149 252 / .4); border-radius: var(--r-md); background: var(--tv-grad-fill); color: #fff; font: 500 14px/1.25 var(--font); cursor: pointer; transition: box-shadow .15s, background-color .15s; }
 .btn:hover { background: var(--tv-blue-press); box-shadow: 0 0 0 3px var(--tv-tint); }
@@ -131,7 +133,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
 
 /* Desktop: two columns. The logo and invite card on the left, the steps and device tabs on the right. */
 @media (min-width: 960px) {
-  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px 32px; align-items: start; max-width: 1080px; margin: 0 auto; padding: 72px 32px 48px; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px 32px; align-items: start; align-content: center; min-height: calc(100vh - 40px); max-width: 1080px; margin: 0 auto; padding: 48px 32px; }
   .logo { grid-column: 1; align-items: flex-start; margin-top: 0; text-align: left; }
   .logo img { width: 72px; height: 72px; }
   .logo h1 { font-size: 44px; }
@@ -168,7 +170,6 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
   <i style="--a:#4c1d95;--b:#1e1b4b"></i><i style="--a:#0e7490;--b:#082f49"></i><i style="--a:#9d174d;--b:#3b0764"></i><i style="--a:#b45309;--b:#431407"></i><i style="--a:#3730a3;--b:#0f172a"></i><i style="--a:#065f46;--b:#022c22"></i><i style="--a:#7e22ce;--b:#2e1065"></i><i style="--a:#be123c;--b:#4c0519"></i><i style="--a:#1d4ed8;--b:#172554"></i><i style="--a:#a16207;--b:#422006"></i><i style="--a:#0f766e;--b:#042f2e"></i><i style="--a:#6d28d9;--b:#1e1b4b"></i>
 </div></div>
 
-<span class="status-pill" id="status-badge">Not connected</span>
 
 <main id="main">
   <div class="logo">
@@ -189,7 +190,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
       <label class="sr-only" for="invite-name">Name</label>
       <input class="input" id="invite-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Name">
       <label class="sr-only" for="invite-email">Email</label>
-      <input class="input" id="invite-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required placeholder="Email">
+      <input class="input" id="invite-email" name="email" type="email" aria-describedby="invite-status" autocomplete="email" inputmode="email" maxlength="120" required placeholder="Email">
       <button class="btn" id="invite-send" type="submit">Request invite</button>
       <p class="form-msg" id="invite-status" aria-live="polite"></p>
     </form>
@@ -200,7 +201,7 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
     <ol class="steps" style="margin-top: 18px">
       <li><div><h3>Ask ghazi for an invite</h3><p>Use the invite form.</p></div></li>
       <li><div><h3>Install NetBird</h3><p>Install it, then sign in with the email and password from the invite.</p></div></li>
-      <li><div><h3>Open tvserver.homes</h3><p>With NetBird on, it opens the TV Server home page. Sign in with your TV Server login.</p></div></li>
+      <li><div><h3>Turn NetBird on, then reload this page</h3><p>You'll see the TV Server home page. Sign in with your TV Server login.</p></div></li>
     </ol>
 
     <details class="fold" id="install" open>
@@ -340,11 +341,14 @@ main { position: relative; z-index: 40; padding: 56px 16px 56px; }
   var status = document.getElementById("invite-status");
 
   function say(kind, msg) { status.setAttribute("data-kind", kind); status.textContent = msg; }
+  email.addEventListener("input", function () { email.removeAttribute("aria-invalid"); });
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var addr = email.value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr)) { say("err", "That email doesn't look right. Check it and try again."); email.focus(); return; }
+    var bad = !addr ? "Enter your email." : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr) ? "That email doesn't look right. Check it and try again." : "";
+    if (bad) { email.setAttribute("aria-invalid", "true"); say("err", bad); email.focus(); return; }
+    email.removeAttribute("aria-invalid");
     if (bot.checked) { say("ok", "Sent. ghazi will email your invite."); return; }
     if (ACCESS_KEY.indexOf("WEB3FORMS") === 0) { say("err", "Requests aren't switched on yet. Message ghazi directly for now."); return; }
     send.disabled = true;
